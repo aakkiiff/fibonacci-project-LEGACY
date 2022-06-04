@@ -8,16 +8,17 @@ pipeline {
         stage('pull github sc') {
              
             steps {
-                git url: 'https://github.com/aakkiiff/jenkins-cicd/'
+                git url: 'https://github.com/aakkiiff/jenkins-cicd'
             }
         }
         stage('docker build push') { 
             steps {
-                bat 'docker login -u "akifboi" -p Qwerty123@'
+                bat 'docker login -u "akifboi" -p "password"' //this cmd is only for test perposes in windows 
+                //windows have issues getting password from env secrets linux machine dont have this bugs
 
-                bat 'docker build --no-cache -t akifboi/jenkins-cicd-client:%bid% -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
-                bat 'docker build --no-cache -t akifboi/jenkins-cicd-server:%bid% -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
-                bat 'docker build --no-cache -t akifboi/jenkins-cicd-worker:%bid% -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
+                bat 'docker build -t akifboi/jenkins-cicd-client:%bid% -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
+                bat 'docker build -t akifboi/jenkins-cicd-server:%bid% -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
+                bat 'docker build -t akifboi/jenkins-cicd-worker:%bid% -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
                 echo "building images done"
 
                 echo "push images to dockerhub"
