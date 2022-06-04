@@ -1,0 +1,1 @@
+**u have to take care of couple of env variables from travis console and prepare aws eks to be ready**
