@@ -1,0 +1,1 @@
+completed kuberenetes yaml file in the k8s directory.ready to deploy on bare metal server
