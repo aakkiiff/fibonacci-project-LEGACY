@@ -11,7 +11,7 @@ function App() {
       <div className="App">
         <header className="App-header">
           <Link to="/">Home</Link>
-          <Link to="/otherpage">Other Page version 2</Link>
+          <Link to="/otherpage">Other Page version 3</Link>
         </header>
         
         <div>
