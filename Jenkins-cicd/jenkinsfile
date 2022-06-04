@@ -1,0 +1,38 @@
+pipeline {
+    agent any 
+    
+    stages {
+        stage('pull github sc') { 
+            steps {
+                bat 'docker image ls'
+                git url: 'https://github.com/aakkiiff/jenkins-cicd/'
+            }
+        }
+        stage('build-pubat docker images') { 
+            steps {
+                bat 'docker login -u "akifboi" -p Qwerty123@'
+                echo "building images"
+                bat 'docker build -t akifboi/jenkins-cicd-client:1 -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
+                bat 'docker build -t akifboi/jenkins-cicd-server:1 -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
+                bat 'docker build -t akifboi/jenkins-cicd-worker:1 -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
+                echo "building images done"
+
+                echo "push images to dockerhub"
+                bat 'docker push akifboi/jenkins-cicd-client:1'
+                bat 'docker push akifboi/jenkins-cicd-server:1'
+                bat 'docker push akifboi/jenkins-cicd-worker:1'
+
+                bat 'docker push akifboi/jenkins-cicd-client:latest'
+                bat 'docker push akifboi/jenkins-cicd-server:latest'
+                bat 'docker push akifboi/jenkins-cicd-worker:latest'
+                bat 'docker logout'
+            }
+        }
+        
+       
+        
+    }
+    
+
+
+}
