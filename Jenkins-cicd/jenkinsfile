@@ -15,9 +15,9 @@ pipeline {
             steps {
                 bat 'docker login -u "akifboi" -p Qwerty123@'
 
-                bat 'docker build -t akifboi/jenkins-cicd-client:%bid% -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
-                bat 'docker build -t akifboi/jenkins-cicd-server:%bid% -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
-                bat 'docker build -t akifboi/jenkins-cicd-worker:%bid% -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
+                bat 'docker build --no-cache -t akifboi/jenkins-cicd-client:%bid% -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
+                bat 'docker build --no-cache -t akifboi/jenkins-cicd-server:%bid% -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
+                bat 'docker build --no-cache -t akifboi/jenkins-cicd-worker:%bid% -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
                 echo "building images done"
 
                 echo "push images to dockerhub"
