@@ -1,32 +1,46 @@
 pipeline {
     agent any 
+    environment {
+    bid = "${env.BUILD_NUMBER}"
+            }
 
-    
     stages {
-        stage('pull github sc') { 
+        stage('pull github sc') {
+             
             steps {
-                bat 'docker image ls'
                 git url: 'https://github.com/aakkiiff/jenkins-cicd/'
             }
         }
-        stage('build-pubat docker images') { 
+        stage('docker build push') { 
             steps {
                 bat 'docker login -u "akifboi" -p Qwerty123@'
-                echo "building images"
-                bat 'docker build -t akifboi/jenkins-cicd-client:1 -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
-                bat 'docker build -t akifboi/jenkins-cicd-server:1 -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
-                bat 'docker build -t akifboi/jenkins-cicd-worker:1 -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
+
+                bat 'docker build -t akifboi/jenkins-cicd-client:%bid% -t akifboi/jenkins-cicd-client:latest -f ./client/Dockerfile ./client'
+                bat 'docker build -t akifboi/jenkins-cicd-server:%bid% -t akifboi/jenkins-cicd-server:latest -f ./server/Dockerfile ./server'
+                bat 'docker build -t akifboi/jenkins-cicd-worker:%bid% -t akifboi/jenkins-cicd-worker:latest -f ./worker/Dockerfile ./worker'
                 echo "building images done"
 
                 echo "push images to dockerhub"
-                bat 'docker push akifboi/jenkins-cicd-client:1'
-                bat 'docker push akifboi/jenkins-cicd-server:1'
-                bat 'docker push akifboi/jenkins-cicd-worker:1'
+                bat 'docker push akifboi/jenkins-cicd-client:%bid%'
+                bat 'docker push akifboi/jenkins-cicd-server:%bid%'
+                bat 'docker push akifboi/jenkins-cicd-worker:%bid%'
 
                 bat 'docker push akifboi/jenkins-cicd-client:latest'
                 bat 'docker push akifboi/jenkins-cicd-server:latest'
                 bat 'docker push akifboi/jenkins-cicd-worker:latest'
                 bat 'docker logout'
+            }
+        }
+        stage('update eks environment') {
+             
+            steps {
+                bat "kubectl get deploy"
+                bat "kubectl apply -f ./k8s"
+                bat "kubectl set image deployments/server-deployment server=akifboi/jenkins-cicd-server:%bid%"
+                bat "kubectl set image deployments/client-deployment client=akifboi/jenkins-cicd-client:%bid%"
+                bat "kubectl set image deployments/worker-deployment worker=akifboi/jenkins-cicd-worker:%bid%"
+
+                echo "hopefully everything will work ......see u soon"
             }
         }
         
